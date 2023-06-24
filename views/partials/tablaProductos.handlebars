@@ -1,0 +1,27 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">IMG</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Precio</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each productos}}
+            <tr>
+                <th scope="row">{{this.id}}</th>
+                <td><img
+                        src="/public/img/{{this.img}}"
+                        alt="{{this.nombre}}"
+                    /></td>
+                <td>{{this.nombre}}</td>
+                <td>{{this.precio}}</td>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+<style>
+    table tbody img{ width: 100px; }
+</style>

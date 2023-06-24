@@ -3,6 +3,10 @@ const { create } = require("express-handlebars");
 
 const app = express();
 
+//MIDDLEWARE
+//DEJAMOS PUBLICA LA CARPETA PUBLIC
+app.use("/public", express.static(__dirname +"/public"));
+
 //crear instancia de hanblebars con configuración de carpeta de partials
 const hbs = create({
     partialsDir: ["views/partials/"],
@@ -54,14 +58,12 @@ let productos = [
 app.get("/productos", (req, res) => {
     res.render("productos", {
         productos,
-        titulo: "Lista de productos."
+        titulo: "Lista de productos.",
     });
 });
 
-
-
 app.all("*", (req, res) => {
     res.render("error404", {
-        layout: "error"
+        layout: "error",
     });
-})
+});
