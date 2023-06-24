@@ -1,0 +1,12 @@
+<h2 class="text-center py-3">{{titulo}}</h2>
+
+{{#if productos}}
+    <ul>
+        {{#each productos}}
+            <li>{{this.nombre}}</li>
+        {{/each}}
+    </ul>
+{{else}}
+    <h3 class="text-center">No existen productos por mostrar.</h3>
+
+{{/if}}
