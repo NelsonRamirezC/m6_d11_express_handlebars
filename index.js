@@ -43,25 +43,25 @@ let productos = [
         id: 1,
         nombre: "Perfume",
         precio: 500,
-        img: "producto1.jpg",
+        img: "/public/img/producto1.jpg",
     },
     {
         id: 2,
         nombre: "Vinagre",
         precio: 1000,
-        img: "producto2.webp",
+        img: "/public/img/producto2.webp",
     },
     {
         id: 3,
         nombre: "Aceite de coco",
         precio: 2000,
-        img: "producto3.webp",
+        img: "/public/img/producto3.webp",
     },
     {
         id: 4,
         nombre: "Aceite extra virgen",
         precio: 4500,
-        img: "producto4.webp",
+        img: "/public/img/producto4.webp",
     },
 ];
 
@@ -73,23 +73,37 @@ app.get("/productos", (req, res) => {
     });
 });
 
-app.get("/productos/add", (req, res) => {
-    res.render("productosAdd");
+app.get("/productos/mantenedor", (req, res) => {
+    res.render("productosMantenedor", {
+        productos
+    });
 });
+
 
 //ENDPOINTS
 app.post("/api/productos", (req, res) => {
-    let { nombre, precio } = req.body;
-    let nuevoProducto = {
-        id: uuid().slice(0, 6),
-        nombre,
-        precio,
-        img: "producto1.jpg",
-    };
 
-    productos.push(nuevoProducto);
+    try {
+        let { nombre, precio, imagen } = req.body;
+        let nuevoProducto = {
+            id: uuid().slice(0, 6),
+            nombre,
+            precio,
+            img: imagen
+        };
 
-    res.status(201).send({ code: 201, message: "Producto creado con éxito." });
+        productos.push(nuevoProducto);
+
+        res.status(201).send({
+            code: 201,
+            message: "Producto creado con éxito.",
+        });
+    } catch (error) {
+        res.status(500).send({
+            code: 500,
+            message: "Problemas internos del servidor.",
+        });
+    }
 });
 
 app.all("*", (req, res) => {

@@ -5,6 +5,9 @@
             <th scope="col">IMG</th>
             <th scope="col">Nombre</th>
             <th scope="col">Precio</th>
+            <th scope="col">Modificar</th>
+            <th scope="col">Eliminar</th>
+
         </tr>
     </thead>
     <tbody>
@@ -17,6 +20,8 @@
                     /></td>
                 <td>{{this.nombre}}</td>
                 <td>{{this.precio}}</td>
+                <td><button class="btn btn-warning">Modificar</button></td>
+                <td><button class="btn btn-danger">Eliminar</button></td>
             </tr>
         {{/each}}
     </tbody>

@@ -6,8 +6,17 @@
         <input type="text" class="form-control" name="nombre" id="addNombre" required>
         <label for="addPrecio" class="form-label">Precio:</label>
         <input type="number" class="form-control" name="precio" id="addPrecio" min="0" required>
+        <label for="addImagen" class="form-label">Imagen:</label>
+        <input type="text" class="form-control" name="imagen" id="addImagen" required>
         <input type="submit" class="btn btn-primary mt-3" value="Crear Producto">
+        <input type="reset" class="btn btn-info mt-3" value="Limpiar">
     </form>
+</section>
+
+<section>
+    <hr>
+    <h2 class="text-center py-3">Listado de productos</h2>
+    {{>tablaProductosAcciones}}
 </section>
 
 
@@ -21,7 +30,8 @@
 
         let producto = {
             nombre: addNombre.value,
-            precio: addPrecio.value
+            precio: addPrecio.value,
+            imagen: addImagen.value
         }
 
         try{
@@ -32,8 +42,9 @@
             });
             let data = await response.json();
             if(data.code == 201){
-               alert(data.message)
-               location.href= "/productos";
+               alert(data.message);
+               formAddProducto.reset();
+               location.reload();
             }else{
                 alert("Algo ha salido mal al crear el producto.")
             }
