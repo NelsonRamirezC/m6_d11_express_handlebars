@@ -21,7 +21,7 @@
                 <td>{{this.nombre}}</td>
                 <td>{{this.precio}}</td>
                 <td><button class="btn btn-warning">Modificar</button></td>
-                <td><button class="btn btn-danger">Eliminar</button></td>
+                <td><button class="btn btn-danger btnEliminar" data-id="{{this.id}}">Eliminar</button></td>
             </tr>
         {{/each}}
     </tbody>
@@ -30,3 +30,48 @@
 <style>
     table tbody img{ width: 100px; }
 </style>
+
+<script>
+
+/*
+    let btnsEliminar = document.getElementsByClassName("btnEliminar");
+    btnsEliminar = [...btnsEliminar]
+
+    btnsEliminar.forEach((boton)=> {
+        boton.addEventListener("click", ()=>{
+        let id = boton.dataset.id;
+        console.log(id);
+        })
+    })
+*/
+
+let tbody = document.querySelector("tbody");
+
+tbody.addEventListener("click", async (event)=> {
+    try{
+        let elemento = event.target;
+        if(elemento.classList.contains("btnEliminar")){
+            let id= elemento.dataset.id;
+        
+            let confirmar = confirm(`¿Está seguro que desea eliminar el producto con ID: ${id}?`);
+
+            if(confirmar){
+                let response = await fetch(`/api/productos/${id}`, {method:"delete"});
+                let data = await response.json();
+                if(data.code == 200){
+                    alert(data.message);
+                    location.reload();
+                }
+                else{
+                    alert(data.message);
+                }
+            }
+        }
+    }catch(error){
+        alert("Ha ocurrido un error al intentar eliminar.")
+    }
+
+})
+
+
+</script>

@@ -106,6 +106,27 @@ app.post("/api/productos", (req, res) => {
     }
 });
 
+//ENDPOINT DE ELIMINAR
+
+app.delete("/api/productos/:id", (req, res) => {
+    try {
+        let id = req.params.id;
+        console.log("ID:", id)
+
+        res.status(200).send({
+            code: 200,
+            message: "Producto eliminado con éxito.",
+        });
+    } catch (error) {
+        res.status(500).send({
+            code: 500,
+            message: "Ha ocurrido un error al intentar eliminar el producto.",
+        });
+    }
+});
+
+
+
 app.all("*", (req, res) => {
     res.render("error404", {
         layout: "error",
