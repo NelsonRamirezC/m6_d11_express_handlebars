@@ -1,0 +1,45 @@
+<h2 class="text-center py-3">Crear nuevo Producto</h2>
+
+<section class="row justify-content-center">
+    <form id="formAddProducto" class="col-12 col-md-8 col-lg-6">
+        <label for="addNombre" class="form-label">Nombre:</label>
+        <input type="text" class="form-control" name="nombre" id="addNombre" required>
+        <label for="addPrecio" class="form-label">Precio:</label>
+        <input type="number" class="form-control" name="precio" id="addPrecio" min="0" required>
+        <input type="submit" class="btn btn-primary mt-3" value="Crear Producto">
+    </form>
+</section>
+
+
+<script>
+    let formAddProducto = document.getElementById("formAddProducto");
+    formAddProducto.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        let producto = {
+            nombre: addNombre.value,
+            precio: addPrecio.value
+        }
+
+        try{
+            let response = await fetch("/api/productos", {
+                method:"POST",
+                headers: myHeaders,
+                body: JSON.stringify(producto)
+            });
+            let data = await response.json();
+            if(data.code == 201){
+               alert(data.message)
+               location.href= "/productos";
+            }else{
+                alert("Algo ha salido mal al crear el producto.")
+            }
+            
+        }catch(error){
+            alert(error.message);
+        }
+    })
+</script>
