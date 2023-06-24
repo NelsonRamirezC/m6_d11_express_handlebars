@@ -20,12 +20,50 @@
                     /></td>
                 <td>{{this.nombre}}</td>
                 <td>{{this.precio}}</td>
-                <td><button class="btn btn-warning">Modificar</button></td>
+                <td><button class="btn btn-warning btnModificar" data-id="{{this.id}}" data-bs-toggle="modal" data-bs-target="#updateModal">Modificar</button></td>
                 <td><button class="btn btn-danger btnEliminar" data-id="{{this.id}}">Eliminar</button></td>
             </tr>
         {{/each}}
     </tbody>
 </table>
+
+
+
+{{!-- MODAL --}}
+
+<div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="updateModalLabel">Modificar producto</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="formUpdateProducto">
+            <label for="updateId" class="form-label">ID:</label>
+            <input type="text" class="form-control" name="id" id="updateId" required disabled>
+            <label for="updateNombre" class="form-label">Nombre:</label>
+            <input type="text" class="form-control" name="nombre" id="updateNombre" required>
+            <label for="updatePrecio" class="form-label">Precio:</label>
+            <input type="number" class="form-control" name="precio" id="updatePrecio" min="0" required>
+            <label for="updateImagen" class="form-label">Imagen:</label>
+            <input type="text" class="form-control" name="imagen" id="updateImagen" required>
+            <input type="submit" class="btn btn-primary mt-3" value="Actualizar Producto">
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
 
 <style>
     table tbody img{ width: 100px; }
@@ -66,12 +104,60 @@ tbody.addEventListener("click", async (event)=> {
                     alert(data.message);
                 }
             }
+        }else if(elemento.classList.contains("btnModificar")){
+            let id= elemento.dataset.id;
+
+            let response = await fetch(`/api/productos/${id}`);
+            let data= await response.json();
+            if(data.code == 200){
+                let producto = data.producto;
+                updateId.value = producto.id;
+                updateNombre.value = producto.nombre;
+                updatePrecio.value = producto.precio;
+                updateImagen.value = producto.img;
+            }
+            else{
+                alert(data.message);
+            }
         }
     }catch(error){
-        alert("Ha ocurrido un error al intentar eliminar.")
+        alert("Algo ha salido mal.")
     }
 
 })
 
+let formUpdateProducto = document.getElementById("formUpdateProducto");
+
+formUpdateProducto.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify({
+        "nombre": updateNombre.value,
+        "precio": Number(updatePrecio.value),
+        "imagen": updateImagen.value
+    });
+
+    const requestOptions = {
+        method: 'PUT',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+    };
+
+    fetch("http://localhost:3000/api/productos/"+updateId.value, requestOptions)
+    .then(response => response.json())
+    .then(data => {
+        if(data.code == 201){
+            alert(data.message);
+            location.reload();
+        }else{
+            alert(data.message);
+        }
+    })
+    .catch(error => alert("Error al actualizar el producto."));
+    })
 
 </script>

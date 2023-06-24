@@ -75,21 +75,20 @@ app.get("/productos", (req, res) => {
 
 app.get("/productos/mantenedor", (req, res) => {
     res.render("productosMantenedor", {
-        productos
+        productos,
     });
 });
 
-
 //ENDPOINTS
+//ENDPOINT AGREGAR PRODUCTOS
 app.post("/api/productos", (req, res) => {
-
     try {
         let { nombre, precio, imagen } = req.body;
         let nuevoProducto = {
             id: uuid().slice(0, 6),
             nombre,
             precio,
-            img: imagen
+            img: imagen,
         };
 
         productos.push(nuevoProducto);
@@ -111,7 +110,20 @@ app.post("/api/productos", (req, res) => {
 app.delete("/api/productos/:id", (req, res) => {
     try {
         let id = req.params.id;
-        console.log("ID:", id)
+
+        //eliminar elemento de un array
+
+        //encontrar indice el producto
+        let indice = productos.findIndex((producto) => producto.id == id);
+
+        if (indice == -1) {
+            return res.status(400).send({
+                code: 400,
+                message: `ID DE PRODUCTO ${id} NO ENCONTRADO, RECARGUE LA PÁGINA.`,
+            });
+        }
+
+        productos.splice(indice, 1);
 
         res.status(200).send({
             code: 200,
@@ -126,7 +138,55 @@ app.delete("/api/productos/:id", (req, res) => {
 });
 
 
+app.put("/api/productos/:id", (req, res) => {
+    try {
+        let id = req.params.id;
+        let { nombre, precio, imagen } = req.body;
 
+        let productoBuscado = productos.find(producto => producto.id == id);
+
+        if (!productoBuscado) {
+             return res.status(400).send({
+                 code: 400,
+                 message: `PRODUCTO CON ${id} NO ENCONTRADO, PRUEBE RECARGUE LA PÁGINA.`,
+             });
+        }
+        productoBuscado.nombre = nombre || productoBuscado.nombre;
+        productoBuscado.precio = precio || productoBuscado.precio;
+        productoBuscado.img = imagen || productoBuscado.img;
+
+        res.status(201).send({
+            code: 201,
+            message: "Producto modificado con éxito.",
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            code: 500,
+            message: "Problemas internos del servidor.",
+        });
+    }
+});
+
+app.get("/api/productos/:id", (req, res) => {
+    try {
+        let id = req.params.id;
+        let productoBuscado = productos.find((producto) => producto.id == id);
+
+        if (!productoBuscado) {
+            return res.status(400).send({
+                code: 400,
+                message: `PRODUCTO CON ${id} NO ENCONTRADO, PRUEBE RECARGUE LA PÁGINA.`,
+            });
+        }
+        res.send({ code: 200, producto: productoBuscado });
+    } catch (error) {
+        res.status(500).send({code: 500, message:"No se pudieron cargar los productos."})
+    }
+});
+
+
+//SIEMPRE AL FINAL
 app.all("*", (req, res) => {
     res.render("error404", {
         layout: "error",
